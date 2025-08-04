@@ -1,7 +1,6 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { auth } from '@/lib/firebase/firebase';
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { useRouter } from "next/navigation";
@@ -11,16 +10,6 @@ export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [showWarning, setShowWarning] = useState(false);
-
-  const searchParams = useSearchParams();
-
-  useEffect(() => {
-    const redirected = searchParams.get('redirected');
-    if (redirected === 'loggedout') {
-      setShowWarning(true);
-    }
-  }, [searchParams]);
 
   const errorMessages: Record<string, string> = {
     "auth/invalid-credential": "Your credentials are invalid. Please check and try again.",
@@ -54,12 +43,6 @@ export default function SignIn() {
 
   return (
     <div className="w-100 m-auto text-center mt-20 bg-white p-4 border rounded-lg border-gray-200">
-      {showWarning && (
-        <div className="mb-4 rounded bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-2">
-          ⚠️ You must log in to view this page.
-        </div>
-      )}
-
       <h1 className="block my-3">Log In</h1>
       <form onSubmit={handleSignIn}>
         <input
