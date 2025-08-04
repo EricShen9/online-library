@@ -46,6 +46,13 @@ export default function ProfilePage() {
     }
   };
 
+  if (!user) {
+    return <p className="p-4">Please <button onClick={() => router.push('/login')}
+          className="text-blue-700 hover:text-blue-400 hover:underline">
+          log in
+        </button> to view your library.</p>;
+  }
+
   return (
     <div className="max-w-xl mx-auto mt-16 p-6 bg-white rounded-lg shadow-md">
       <h1 className="text-2xl font-bold mb-4">Profile Settings</h1>
