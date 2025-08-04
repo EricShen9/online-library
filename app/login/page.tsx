@@ -6,18 +6,14 @@ import { auth } from '@/lib/firebase/firebase';
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { useRouter } from "next/navigation";
 
-
 export default function SignIn() {
   const router = useRouter();
-  const [isClient, setIsClient] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const errorMessages: Record<string, string> = {
-  "auth/invalid-credential": "Your credentials are invalid. Please check and try again.",
-  };
-  const searchParams = useSearchParams();
   const [showWarning, setShowWarning] = useState(false);
+
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     const redirected = searchParams.get('redirected');
@@ -26,19 +22,16 @@ export default function SignIn() {
     }
   }, [searchParams]);
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  const errorMessages: Record<string, string> = {
+    "auth/invalid-credential": "Your credentials are invalid. Please check and try again.",
+  };
 
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      if (isClient) {
-        console.log("Signed in from:", window.location.href);
-      }
-
+      console.log("Signed in from:", window.location.href);
       router.push("/dashboard");
     } catch (err: any) {
       setError(errorMessages[err.code] || "Something went wrong. Please try again.");
@@ -58,10 +51,6 @@ export default function SignIn() {
       setError(errorMessages[err.code] || "Unable to send reset email.");
     }
   };
-
-  if (!isClient) {
-    return <p>Loading...</p>;
-  }
 
   return (
     <div className="w-100 m-auto text-center mt-20 bg-white p-4 border rounded-lg border-gray-200">
@@ -89,15 +78,21 @@ export default function SignIn() {
           onChange={(e) => setPassword(e.target.value)}
           className="block p-1 my-3 w-full"
         />
-        <button type="submit" className="width-full border rounded-lg bg-blue-700 hover:bg-blue-400 text-white p-2 m-1">Log In</button>
+        <button type="submit" className="w-full border rounded-lg bg-blue-700 hover:bg-blue-400 text-white p-2 m-1">Log In</button>
         {error && (
-          <div className = "block m-2 rounded border bg-red-100 border-red-400 text-red-600 px-4 py-2"> 🚫 {error} </div>
+          <div className="block m-2 rounded border bg-red-100 border-red-400 text-red-600 px-4 py-2">
+            🚫 {error}
+          </div>
         )}
       </form>
-      <p className="mx-1 mt-2 block">Don't have an account? <button onClick={() => router.push('/signup')}
-          className="text-blue-700 hover:text-blue-400 hover:underline">
-          Signup 
-        </button> 
+      <p className="mx-1 mt-2 block">
+        Don't have an account?{' '}
+        <button
+          onClick={() => router.push('/signup')}
+          className="text-blue-700 hover:text-blue-400 hover:underline"
+        >
+          Signup
+        </button>{' '}
         <button
           type="button"
           onClick={handleResetPassword}
@@ -105,8 +100,7 @@ export default function SignIn() {
         >
           Forgot your password?
         </button>
-        </p>
-        
+      </p>
     </div>
   );
 }
